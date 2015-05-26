@@ -1,0 +1,2 @@
+This is the Android Phone UI of our project.
+We take photo by specific time interval and transmit to server to do the pedestrain detection and head pose detection.
