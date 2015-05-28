@@ -50,7 +50,7 @@ public class HttpClientUtils {
 					HttpEntity resEntity = response.getEntity();
 					if (resEntity != null) {
 						log.info("Response content length: " + resEntity.getContentLength());
-						log.info("Response content: " + EntityUtils.toString(resEntity)); // ±q³oÃä®³¨ì§@¼Ğ¦ì¸m
+						log.info("Response content: " + EntityUtils.toString(resEntity)); // å¾é€™é‚Šè®€å‡ºä½œæ¨™ä½ç½®!!
 					}
 					EntityUtils.consume(resEntity);
 				} finally {
