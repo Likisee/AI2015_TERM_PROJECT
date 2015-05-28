@@ -50,8 +50,7 @@ public class HttpClientUtils {
 					HttpEntity resEntity = response.getEntity();
 					if (resEntity != null) {
 						log.info("Response content length: " + resEntity.getContentLength());
-						log.info("Response content: " + EntityUtils.toString(resEntity));
-						result = EntityUtils.toString(resEntity);
+						log.info("Response content: " + EntityUtils.toString(resEntity)); // 從這邊拿到作標位置
 					}
 					EntityUtils.consume(resEntity);
 				} finally {
@@ -61,7 +60,7 @@ public class HttpClientUtils {
 		} finally {
 			httpclient.close();
 		}
-		return result;
+		return "out: " + result;
 	}
 
 	public static void main(String[] args) {

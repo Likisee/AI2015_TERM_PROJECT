@@ -1,12 +1,19 @@
 package com.ntu.ai;
 
 import java.io.*;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.servlet.*;
 import javax.servlet.annotation.*;
 import javax.servlet.http.*;
 
-import com.sun.media.jfxmedia.logging.Logger;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileItemFactory;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Servlet implementation class ImgRecog
@@ -14,6 +21,7 @@ import com.sun.media.jfxmedia.logging.Logger;
 @WebServlet("/ImgRecog")
 public class ImgRecog extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private static Log log = LogFactory.getLog(ImgRecog.class);
 	   
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -41,64 +49,41 @@ public class ImgRecog extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		request.setCharacterEncoding("UTF-8");
-		
-		// inputFolder
+
 		String folderPath = "D:\\#ai_in\\";
+		String absolutePath = "";
 		
-		
-//		for(Part part : request.getParts()) {
-//			if(! "file".equals(part.getName())) {
-//				System.out.println(part);
-//			}
-//		}
-		
+        boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+        if (isMultipart) {
+            FileItemFactory factory = new DiskFileItemFactory();
+            ServletFileUpload upload = new ServletFileUpload(factory);
+            upload.setSizeMax(1000000000);
 
-//		// filename
-//		String partName = "filename";
-//		Part part = request.getPart(partName);
-//		BufferedReader reader = new BufferedReader( new InputStreamReader(part.getInputStream()));
-//		String filename ="";
-//		while((filename=reader.readLine())!=null) {
-//			System.out.println(filename);
-//			break;
-//		}
-//		
-//		// bin
-//		Part bin = request.getPart("bin");
-//		InputStream is = bin.getInputStream();
-//		
-//		// write
-//		byte[] buffer = new byte[is.available()];
-//		is.read(buffer);
-//		File targetFile = new File(inputFolder + filename);
-//		OutputStream outStream = new FileOutputStream(targetFile);
-//		outStream.write(buffer);
+            try {
+                List items = upload.parseRequest(request);
+                Iterator iterator = items.iterator();
+                while (iterator.hasNext()) {
+                    FileItem item = (FileItem) iterator.next();
 
+                    if (!item.isFormField()) {
+                        String fileName = item.getName();
+                        File uploadedFile = new File(folderPath + fileName);
+                        absolutePath = uploadedFile.getAbsolutePath();
+                        log.info(absolutePath);
+                        item.write(uploadedFile);
+                    }
+                }
+            } catch (Exception e) {
+    			e.printStackTrace();
+    		}
+        }
 		
-//		// Finally
-//		PrintWriter out = response.getWriter();
-//		out.println("AbsolutePath: " + targetFile.getAbsolutePath());
-//		out.println("CanonicalPath: " + targetFile.getCanonicalPath());
-//		out.close();
-	}
-	
-	private void write(String folderPath, Part part) throws IOException, FileNotFoundException {
-		String header = part.getHeader("Content-Disposition");
-		String filename = header.substring(header.indexOf("filename=\"") + 10, header.lastIndexOf("\""));
-		write(folderPath, filename, part.getInputStream());
-	}
-
-	private void write(String folderPath, String filename, InputStream in)	throws IOException, FileNotFoundException {
-		OutputStream out = new FileOutputStream("folderPath" + filename);
-		byte[] buffer = new byte[1024];
-		int length = -1;
-		while ((length = in.read(buffer)) != -1) {
-			out.write(buffer, 0, length);
-		}
-		in.close();
+		
+		// Finally
+		PrintWriter out = response.getWriter();
+		out.println("AbsolutePath: " + absolutePath);
 		out.close();
+	
 	}
 	
 }

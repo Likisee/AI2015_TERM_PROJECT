@@ -2,6 +2,7 @@
     <wb-module deploy-name="AI_TERM_PROJECT_WEB">
         <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
+        <wb-resource deploy-path="/WEB-INF/lib" source-path="/lib"/>
         <property name="context-root" value="AI_TERM_PROJECT_WEB"/>
         <property name="java-output-path" value="/AI_TERM_PROJECT_WEB/build/classes"/>
     </wb-module>
