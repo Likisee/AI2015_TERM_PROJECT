@@ -14,6 +14,9 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.JSONObject;
+
+import com.util.BatUtils;
 
 /**
  * Servlet implementation class ImgRecog
@@ -36,13 +39,47 @@ public class ImgRecog extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		// Get from request
-		String test = request.getParameter("test");
+		String folderPath = "D:\\#ai_in\\";
+		String fileName = request.getParameter("fileName");
+		String absolutePath = folderPath + fileName;
+		JSONObject jObject = new JSONObject();
 		
-		// Finally
-		PrintWriter out = response.getWriter();
-		out.print(test);
-		out.close();
+//		JSONArray jArr = new JSONArray();
+//		JSONObject jObj = null;
+		
+		try {
+	        File fcheck = new File(absolutePath);
+	        if(fcheck.exists() && fcheck.isFile()) {
+				jObject.put("filename", fileName);
+				
+//				jObj = new JSONObject();
+//				jObj.put("id", 1);
+//				jObj.put("description", "DANGER");
+//				jObj.put("upperleft_x", 50);
+//				jObj.put("upperleft_y", 50);
+//				jObj.put("lowerright_x", 100);
+//				jObj.put("lowerright_y", 100);
+//				jArr.put(jObj);	
+//				jObj = new JSONObject();
+//				jObj.put("id", 2);
+//				jObj.put("description", "DANGER");
+//				jObj.put("upperleft_x", 100);
+//				jObj.put("upperleft_y", 100);
+//				jObj.put("lowerright_x", 200);
+//				jObj.put("lowerright_y", 200);
+//				jArr.put(jObj);	
+//				jObject.put("coordinate", jArr);
+				jObject.put("coordinate", BatUtils.runTemplate1(absolutePath));
+	        }
+			
+			PrintWriter out = response.getWriter();
+			out.println(jObject.toString());
+	        log.info(jObject.toString());
+			out.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			log.error(e.toString(), e);
+		}
 	}
 
 	/**
@@ -51,39 +88,46 @@ public class ImgRecog extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		String folderPath = "D:\\#ai_in\\";
+		String fileName = "";
 		String absolutePath = "";
+		JSONObject jObject = new JSONObject();
 		
-        boolean isMultipart = ServletFileUpload.isMultipartContent(request);
-        if (isMultipart) {
-            FileItemFactory factory = new DiskFileItemFactory();
-            ServletFileUpload upload = new ServletFileUpload(factory);
-            upload.setSizeMax(1000000000);
+		try {
+	        boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+	        if (isMultipart) {
+	            FileItemFactory factory = new DiskFileItemFactory();
+	            ServletFileUpload upload = new ServletFileUpload(factory);
+	            upload.setSizeMax(1000000000);
 
-            try {
-                List items = upload.parseRequest(request);
-                Iterator iterator = items.iterator();
-                while (iterator.hasNext()) {
-                    FileItem item = (FileItem) iterator.next();
+	            try {
+	                List items = upload.parseRequest(request);
+	                Iterator iterator = items.iterator();
+	                while (iterator.hasNext()) {
+	                    FileItem item = (FileItem) iterator.next();
 
-                    if (!item.isFormField()) {
-                        String fileName = item.getName();
-                        File uploadedFile = new File(folderPath + fileName);
-                        absolutePath = uploadedFile.getAbsolutePath();
-                        log.info(absolutePath);
-                        item.write(uploadedFile);
-                    }
-                }
-            } catch (Exception e) {
-    			e.printStackTrace();
-    		}
-        }
-		
-		
-		// Finally
-		PrintWriter out = response.getWriter();
-		out.println("AbsolutePath: " + absolutePath);
-		out.close();
-	
+	                    if (!item.isFormField()) {
+	                        fileName = item.getName();
+	                        File uploadedFile = new File(folderPath + fileName);
+	                        absolutePath = uploadedFile.getAbsolutePath();
+	                        log.info(absolutePath);
+	                        item.write(uploadedFile);
+	                    }
+	                }
+	            } catch (Exception e) {
+	    			e.printStackTrace();
+	    		}
+	        }
+	        
+	        jObject.put("success", true);
+			
+	        PrintWriter out = response.getWriter();
+			out.println(jObject.toString());
+	        log.info(jObject.toString());
+			out.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			log.error(e.toString(), e);
+		}
 	}
 	
 }
