@@ -57,6 +57,37 @@ public class BatUtils {
 		return jArr;
 	}
 	
+	public static JSONArray runTemplate1OnlyTxt(String filePath) {
+
+		if(!filePath.endsWith(".txt")) {
+			return null;
+		}
+		
+		// read
+		JSONArray jArr = new JSONArray();
+		String [] contentArr = FileUtils.readFileAsString(filePath).split("\r\n");
+		for(int i = 1; i < contentArr.length; i++) {
+			try {
+				String [] onelineArr = contentArr[i].split(" ");
+				if(onelineArr.length > 1) {
+					JSONObject jObj = new JSONObject();
+					jObj.put("id", i);
+					jObj.put("description", "DANGER");
+					jObj.put("upperleft_x", onelineArr[0]);
+					jObj.put("upperleft_y", onelineArr[1]);
+					jObj.put("lowerright_x", onelineArr[2]);
+					jObj.put("lowerright_y", onelineArr[3]);
+					jArr.put(jObj);					
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+
+		}
+//    	log.info(jArr.toString());
+		return jArr;
+	}
+	
 	public static void run(String batPath){
 		Runtime runtime = Runtime.getRuntime();
 		try {

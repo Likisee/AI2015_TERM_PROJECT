@@ -66,7 +66,7 @@ public class HttpClientUtils {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		try {
-			sendPost("http://localhost:8180" + "/AI_TERM_PROJECT_WEB/ImgRecog", "D:\\#ai_out\\777.jpg");
+			sendPost("http://likisee.ddns.net:8180" + "/AI_TERM_PROJECT_WEB/ImgRecog", "D:\\#ai_out\\777.jpg");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

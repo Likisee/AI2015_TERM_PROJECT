@@ -11,6 +11,7 @@ public class FileUtils {
 		try {
 			FileInputStream fisTargetFile = new FileInputStream(file);
 			targetFileStr = org.apache.commons.io.IOUtils.toString(fisTargetFile, "UTF-8");
+			fisTargetFile.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

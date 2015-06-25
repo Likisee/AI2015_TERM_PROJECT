@@ -12,6 +12,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONObject;
@@ -48,10 +49,12 @@ public class ImgRecog extends HttpServlet {
 //		JSONObject jObj = null;
 		
 		try {
+			
+			// runTemplate1
 	        File fcheck = new File(absolutePath);
 	        if(fcheck.exists() && fcheck.isFile()) {
 				jObject.put("filename", fileName);
-				
+//				
 //				jObj = new JSONObject();
 //				jObj.put("id", 1);
 //				jObj.put("description", "DANGER");
@@ -72,6 +75,17 @@ public class ImgRecog extends HttpServlet {
 				jObject.put("coordinate", BatUtils.runTemplate1(absolutePath));
 	        }
 			
+			// runTemplate1OnlyTxt
+//			if(absolutePath.contains(".")) {
+//				absolutePath = absolutePath.substring(0, absolutePath.lastIndexOf(".")) + ".txt";
+//			}
+//	        File fcheck = new File(absolutePath);
+//	        if(fcheck.exists() && fcheck.isFile()) {
+//	        	jObject.put("filename", fileName);
+//	        	jObject.put("coordinate", BatUtils.runTemplate1OnlyTxt(absolutePath));
+//	        }
+
+			
 			PrintWriter out = response.getWriter();
 			out.println(jObject.toString());
 	        log.info(jObject.toString());
@@ -88,6 +102,8 @@ public class ImgRecog extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		String folderPath = "D:\\#ai_in\\";
+//		String folderTemp = "D:\\#ai_tmp\\";
+//		File destDir = new File("D:\\#ai_in\\");
 		String fileName = "";
 		String absolutePath = "";
 		JSONObject jObject = new JSONObject();
@@ -111,6 +127,9 @@ public class ImgRecog extends HttpServlet {
 	                        absolutePath = uploadedFile.getAbsolutePath();
 	                        log.info(absolutePath);
 	                        item.write(uploadedFile);
+	                        
+//	                        // TODO
+//	                        FileUtils.copyFileToDirectory(uploadedFile, destDir);
 	                    }
 	                }
 	            } catch (Exception e) {
